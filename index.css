@@ -1,0 +1,41 @@
+.wrapper {
+	border: 1px solid black;
+	width: 250px;
+	padding: 15px;
+}
+
+.screen {
+	position: relative;
+	border: 1px solid black;
+	padding: 30px 15px;
+}
+
+.screen .content {
+	position: absolute;
+	right: 10px;
+	top: 30px;
+	font-size: 25px;
+}
+
+.bottom {
+	margin-top: 15px;
+}
+
+.bottom .row {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 15px;
+}
+
+.bottom .row .btn {
+	border: 1px solid grey;
+	width: 50px;
+	height: 50px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: #ccc;
+	cursor: pointer;
+	user-select: none;
+	box-sizing: border-box;
+}
