@@ -1,70 +1,74 @@
 import { calculator } from './calculator.js';
 
-const btns = document.querySelectorAll('.btn.number');
-const screenContent = document.querySelector('.screen .content');
+let isOverwritten = true;
+let screenContent = '';
+
+function setScreenContent(value) {
+	if (value === undefined) {
+		return;
+	}
+
+	if (isOverwritten) {
+		screenContent = value;
+	} else {
+		screenContent += value;
+	}
+
+	if (screenContent.length > 1 && Number(screenContent.charAt(0)) === 0) {
+		screenContent = screenContent.substring(1);
+	}
+
+	updateDOM();
+}
+
+function setIsOverwritten(value) {
+	isOverwritten = value;
+}
+
+function updateDOM() {
+	screenDisplay.textContent = screenContent;
+	historyView.innerHTML = `<p>${calculator.historyContent}</p>`;
+}
+
+const numBtns = document.querySelectorAll('.btn.number');
+const screenDisplay = document.querySelector('.screen .content');
 const resetBtn = document.querySelector('.btn.reset');
 const operationBtns = document.querySelectorAll('.btn.operation');
 const equalBtn = document.querySelector('.btn.equal');
 const historyView = document.getElementById('history-view');
-let overwrite = true;
-
-for (let i = 0; i < btns.length; i++) {
-	const btn = btns[i];
-	btn.addEventListener('click', () => {
-		const num = btn.textContent.trim();
-
-		if (overwrite) {
-			screenContent.textContent = num;
-			overwrite = false;
-		} else {
-			screenContent.textContent += num;
-		}
-
-		if (screenContent.textContent.charAt(0) == 0) {
-			screenContent.textContent = screenContent.textContent.substring(1);
-		}
-	});
-}
 
 resetBtn.addEventListener('click', () => {
-	overwrite = true;
-	screenContent.textContent = '0';
-	calculator.clear();
-	renderHistory();
+	calculator.reset();
+	setIsOverwritten(true);
+	setScreenContent(0);
 });
-
-for (let i = 0; i < operationBtns.length; i++) {
-	const btn = operationBtns[i];
-	btn.addEventListener('click', () => {
-		overwrite = true;
-		const operation = btn.textContent.trim();
-		const num = Number(screenContent.textContent);
-		calculator.addInput(num, operation);
-
-		renderResult();
-	});
-}
 
 equalBtn.addEventListener('click', () => {
-	overwrite = true;
-	const num = Number(screenContent.textContent);
-	calculator.addInput(num, '=', true);
-	renderResult();
+	calculator.addInput(Number(screenContent), '=', true);
+	setIsOverwritten(true);
+	setScreenContent(calculator.result);
 });
 
-function renderResult() {
-	if (calculator.result != undefined) {
-		screenContent.textContent = calculator.result;
+numBtns.forEach((btn) =>
+	btn.addEventListener('click', () => {
+		const value = btn.textContent.trim();
+		setScreenContent(value);
+		isOverwritten && setIsOverwritten(false);
+	})
+);
+
+operationBtns.forEach((btn) =>
+	btn.addEventListener('click', () => {
+		const operation = btn.textContent.trim();
+		const num = Number(screenContent);
+		calculator.addInput(num, operation);
+		setIsOverwritten(true);
+		setScreenContent(calculator.result);
 		/**
 		 * below line is important to avoid bug in certain cases, for example,
 		 * "6 * 3 + 2 - 3 * 2 - 1"
 		 * it avoids rendering 20 again when user inputs "3 *"
 		 */
-		calculator.clearResult();
-	}
-	renderHistory();
-}
-
-function renderHistory() {
-	historyView.innerHTML = `<p>${calculator.historyContent}</p>`;
-}
+		calculator.resetResult();
+	})
+);

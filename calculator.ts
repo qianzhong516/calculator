@@ -1,10 +1,10 @@
 // A calculator that mimics the built-in calculator on Iphone device
 
-type Operation = '+' | '-' | '*' | '/';
+type Operation = '+' | '-' | '*' | '÷';
 
 const operationPrecedenceMap: Record<Operation, number> = {
 	['*']: 0,
-	['/']: 0,
+	['÷']: 0,
 	['+']: 1,
 	['-']: 1,
 };
@@ -31,13 +31,13 @@ class Calculator {
 		}
 	}
 
-	clear() {
+	reset() {
 		this.history = [];
 		this.historyView = [];
 		this.resultToDisplay = undefined;
 	}
 
-	clearResult() {
+	resetResult() {
 		this.resultToDisplay = undefined;
 	}
 
@@ -79,7 +79,7 @@ class Calculator {
 				return x - y;
 			case '*':
 				return x * y;
-			case '/':
+			case '÷':
 				return x / y;
 			default:
 				throw new Error('Such operation does not exist!');
