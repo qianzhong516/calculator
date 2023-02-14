@@ -2,6 +2,7 @@ import { calculator } from './calculator.js';
 
 let isOverwritten = true;
 let screenContent = '';
+let activeBtnIndex = undefined;
 
 function setScreenContent(value) {
 	if (value === undefined) {
@@ -25,11 +26,21 @@ function setIsOverwritten(value) {
 	isOverwritten = value;
 }
 
+function setActiveBtnIndex(index) {
+	activeBtnIndex = index;
+	updateDOM();
+}
+
 function updateDOM() {
 	screenDisplay.textContent = screenContent;
 	historyView.innerHTML = `<p>${calculator.historyContent}</p>`;
+	btns.forEach((btn) => btn.classList.remove('active'));
+	if (activeBtnIndex !== undefined) {
+		btns[activeBtnIndex].classList.add('active');
+	}
 }
 
+const btns = document.querySelectorAll('.btn');
 const numBtns = document.querySelectorAll('.btn.number');
 const screenDisplay = document.querySelector('.screen .content');
 const resetBtn = document.querySelector('.btn.reset');
@@ -41,6 +52,7 @@ resetBtn.addEventListener('click', () => {
 	calculator.reset();
 	setIsOverwritten(true);
 	setScreenContent(0);
+	setActiveBtnIndex(undefined);
 });
 
 equalBtn.addEventListener('click', () => {
@@ -53,6 +65,7 @@ numBtns.forEach((btn) =>
 	btn.addEventListener('click', () => {
 		const value = btn.textContent.trim();
 		setScreenContent(value);
+		setActiveBtnIndex(Array.from(btns).indexOf(btn));
 		isOverwritten && setIsOverwritten(false);
 	})
 );
@@ -64,6 +77,7 @@ operationBtns.forEach((btn) =>
 		calculator.addInput(num, operation);
 		setIsOverwritten(true);
 		setScreenContent(calculator.result);
+		setActiveBtnIndex(Array.from(btns).indexOf(btn));
 		/**
 		 * below line is important to avoid bug in certain cases, for example,
 		 * "6 * 3 + 2 - 3 * 2 - 1"

@@ -39,3 +39,9 @@
 	user-select: none;
 	box-sizing: border-box;
 }
+
+.btn.number.active,
+.btn.operation.active {
+	background: #2596be;
+	color: #ffffff;
+}
