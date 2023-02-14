@@ -48,8 +48,7 @@ for (let i = 0; i < operationBtns.length; i++) {
 equalBtn.addEventListener('click', () => {
 	overwrite = true;
 	const num = Number(screenContent.textContent);
-	calculator.addInput(num, '=');
-
+	calculator.addInput(num, '=', true);
 	renderResult();
 });
 

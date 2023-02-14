@@ -22,10 +22,13 @@ class Calculator {
 		return this.historyView.join(' ');
 	}
 
-	addInput(value: number, operation: Operation) {
+	addInput(value: number, operation: Operation, isEqualBtnClicked = false) {
 		this.history.push(value, operation);
 		this.historyView.push(value, operation);
 		this.traverseLeft(this.history.length - 1)
+		if(isEqualBtnClicked) {
+			this.history = [];
+		}
 	}
 
 	clear() {
