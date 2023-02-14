@@ -54,52 +54,57 @@ const operationBtns = document.querySelectorAll('.btn.operation');
 const equalBtn = document.querySelector('.btn.equal');
 const historyView = document.getElementById('history-view');
 
-resetBtn.addEventListener('click', () => {
+resetBtn.addEventListener('click', resetBtnHandler);
+equalBtn.addEventListener('click', equalBtnHandler);
+numBtns.forEach((btn) =>
+	btn.addEventListener('click', () => numBtnHandler(btn))
+);
+operationBtns.forEach((btn) =>
+	btn.addEventListener('click', () => operationBtnHandler(btn))
+);
+
+function resetBtnHandler() {
 	calculator.reset();
 	setIsOverwritten(true);
 	setScreenContent(0);
 	setActiveBtnIndex(undefined);
-});
+}
 
-equalBtn.addEventListener('click', () => {
+function equalBtnHandler() {
 	calculator.addInput(Number(screenContent), '=', true);
 	setIsOverwritten(true);
 	setScreenContent(calculator.result);
-});
+}
 
-numBtns.forEach((btn) =>
-	btn.addEventListener('click', () => {
-		const value = btn.textContent.trim();
-		setScreenContent(value);
-		setActiveBtnIndex(Array.from(btns).indexOf(btn));
-		isOverwritten && setIsOverwritten(false);
-	})
-);
+function numBtnHandler(btn) {
+	const value = btn.textContent.trim();
+	setScreenContent(value);
+	setActiveBtnIndex(Array.from(btns).indexOf(btn));
+	isOverwritten && setIsOverwritten(false);
+}
 
-operationBtns.forEach((btn) =>
-	btn.addEventListener('click', () => {
-		const isOperationActive = Array.from(operationBtns).some((btn) =>
-			btn.classList.contains('active')
-		);
-		const operation = btn.textContent.trim();
-		const num = Number(screenContent);
+function operationBtnHandler(btn) {
+	const isOperationActive = Array.from(operationBtns).some((btn) =>
+		btn.classList.contains('active')
+	);
+	const operation = btn.textContent.trim();
+	const num = Number(screenContent);
 
-		setIsOperationChanged(isOperationActive);
-		setIsOverwritten(true);
-		setActiveBtnIndex(Array.from(btns).indexOf(btn));
+	setIsOperationChanged(isOperationActive);
+	setIsOverwritten(true);
+	setActiveBtnIndex(Array.from(btns).indexOf(btn));
 
-		if (isOperationActive) {
-			calculator.changeOperation(operation);
-			return;
-		}
+	if (isOperationActive) {
+		calculator.changeOperation(operation);
+		return;
+	}
 
-		calculator.addInput(num, operation);
-		setScreenContent(calculator.result);
-		/**
-		 * below line is important to avoid bug in certain cases, for example,
-		 * "6 * 3 + 2 - 3 * 2 - 1"
-		 * it avoids rendering 20 again when user inputs "3 *"
-		 */
-		calculator.resetResult();
-	})
-);
+	calculator.addInput(num, operation);
+	setScreenContent(calculator.result);
+	/**
+	 * below line is important to avoid bug in certain cases, for example,
+	 * "6 * 3 + 2 - 3 * 2 - 1"
+	 * it avoids rendering 20 again when user inputs "3 *"
+	 */
+	calculator.resetResult();
+}
