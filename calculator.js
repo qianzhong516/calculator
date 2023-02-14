@@ -16,6 +16,12 @@ class Calculator {
     get historyContent() {
         return this.historyView.join(' ');
     }
+    changeOperation(operation) {
+        this.history.pop();
+        this.history.push(operation);
+        this.historyView.pop();
+        this.historyView.push(operation);
+    }
     addInput(value, operation, isEqualBtnClicked = false) {
         this.history.push(value, operation);
         this.historyView.push(value, operation);

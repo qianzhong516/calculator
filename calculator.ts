@@ -10,7 +10,7 @@ const operationPrecedenceMap: Record<Operation, number> = {
 };
 
 class Calculator {
-	history: (Operation | number)[] = []
+	history: (Operation | number)[] = [];
 	historyView: (Operation | number)[] = [];
 	private resultToDisplay: number | undefined;
 
@@ -22,11 +22,18 @@ class Calculator {
 		return this.historyView.join(' ');
 	}
 
+	changeOperation(operation: Operation) {
+		this.history.pop();
+		this.history.push(operation);
+		this.historyView.pop();
+		this.historyView.push(operation);
+	}
+
 	addInput(value: number, operation: Operation, isEqualBtnClicked = false) {
 		this.history.push(value, operation);
 		this.historyView.push(value, operation);
-		this.traverseLeft(this.history.length - 1)
-		if(isEqualBtnClicked) {
+		this.traverseLeft(this.history.length - 1);
+		if (isEqualBtnClicked) {
 			this.history = [];
 		}
 	}
@@ -65,7 +72,7 @@ class Calculator {
 			this.history[leftPos] as number,
 			this.history[rightPos] as number
 		);
-		this.resultToDisplay = result
+		this.resultToDisplay = result;
 		// replace the equation with the calculated result
 		this.history.splice(leftPos, 3, result);
 		this.traverseLeft(this.history.length - 1);

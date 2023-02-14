@@ -26,6 +26,12 @@ function setIsOverwritten(value) {
 	isOverwritten = value;
 }
 
+function setIsOperationChanged(value) {
+	if (value) {
+		updateDOM();
+	}
+}
+
 function setActiveBtnIndex(index) {
 	activeBtnIndex = index;
 	updateDOM();
@@ -72,12 +78,23 @@ numBtns.forEach((btn) =>
 
 operationBtns.forEach((btn) =>
 	btn.addEventListener('click', () => {
+		const isOperationActive = Array.from(operationBtns).some((btn) =>
+			btn.classList.contains('active')
+		);
 		const operation = btn.textContent.trim();
 		const num = Number(screenContent);
-		calculator.addInput(num, operation);
+
+		setIsOperationChanged(isOperationActive);
 		setIsOverwritten(true);
-		setScreenContent(calculator.result);
 		setActiveBtnIndex(Array.from(btns).indexOf(btn));
+
+		if (isOperationActive) {
+			calculator.changeOperation(operation);
+			return;
+		}
+
+		calculator.addInput(num, operation);
+		setScreenContent(calculator.result);
 		/**
 		 * below line is important to avoid bug in certain cases, for example,
 		 * "6 * 3 + 2 - 3 * 2 - 1"
