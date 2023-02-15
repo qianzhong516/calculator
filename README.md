@@ -4,7 +4,7 @@ A calculator that mimics the built-in calculator on Iphone devices.
 
 ## Keyboard Mapping
 
-Input numbers by typing `0-9`
+Input numbers by typing `0-9`. Type `.` for decimals.
 
 Input operation by typing `/`, `*`, `-`, `+`
 
