@@ -72,7 +72,7 @@ class Calculator {
 			this.history[leftPos] as number,
 			this.history[rightPos] as number
 		);
-		this.resultToDisplay = result;
+		this.resultToDisplay = Number(result.toFixed(2));
 		// replace the equation with the calculated result
 		this.history.splice(leftPos, 3, result);
 		this.traverseLeft(this.history.length - 1);

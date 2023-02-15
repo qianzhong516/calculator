@@ -56,12 +56,45 @@ const historyView = document.getElementById('history-view');
 
 resetBtn.addEventListener('click', resetBtnHandler);
 equalBtn.addEventListener('click', equalBtnHandler);
-numBtns.forEach((btn) =>
-	btn.addEventListener('click', () => numBtnHandler(btn))
-);
-operationBtns.forEach((btn) =>
-	btn.addEventListener('click', () => operationBtnHandler(btn))
-);
+numBtns.forEach((btn) => {
+	const value = btn.textContent.trim();
+	const activeBtnIndex = Array.from(btns).indexOf(btn);
+	btn.addEventListener('click', () => numBtnHandler(value, activeBtnIndex));
+});
+operationBtns.forEach((btn) => {
+	const operation = btn.textContent.trim();
+	const activeBtnIndex = Array.from(btns).indexOf(btn);
+	btn.addEventListener('click', () =>
+		operationBtnHandler(operation, activeBtnIndex)
+	);
+});
+
+document.addEventListener('keypress', (e) => {
+	const numReg = new RegExp(/[0-9.]/g);
+	const operationReg = new RegExp(/[+\-*/]/g);
+
+	if (e.key.match(numReg)) {
+		const activeBtnIndex =
+			e.key !== '.'
+				? Array.from(btns).findIndex((btn) => btn.textContent === e.key)
+				: undefined;
+		numBtnHandler(e.key, activeBtnIndex);
+		return;
+	}
+
+	if (e.key.match(operationReg)) {
+		const key = e.key === '/' ? '÷' : e.key;
+		const activeBtnIndex = Array.from(btns).findIndex(
+			(btn) => btn.textContent === key
+		);
+		operationBtnHandler(key, activeBtnIndex);
+		return;
+	}
+
+	if (e.key === 'Enter') {
+		equalBtnHandler();
+	}
+});
 
 function resetBtnHandler() {
 	calculator.reset();
@@ -76,28 +109,27 @@ function equalBtnHandler() {
 	setScreenContent(calculator.result);
 }
 
-function numBtnHandler(btn) {
-	const value = btn.textContent.trim();
+function numBtnHandler(value, activeBtnIndex) {
+	activeBtnIndex !== undefined && setActiveBtnIndex(activeBtnIndex);
 	setScreenContent(value);
-	setActiveBtnIndex(Array.from(btns).indexOf(btn));
 	isOverwritten && setIsOverwritten(false);
 }
 
-function operationBtnHandler(btn) {
+function operationBtnHandler(operation, activeBtnIndex) {
 	const isOperationActive = Array.from(operationBtns).some((btn) =>
 		btn.classList.contains('active')
 	);
-	const operation = btn.textContent.trim();
-	const num = Number(screenContent);
 
+	setActiveBtnIndex(activeBtnIndex);
 	setIsOperationChanged(isOperationActive);
 	setIsOverwritten(true);
-	setActiveBtnIndex(Array.from(btns).indexOf(btn));
 
 	if (isOperationActive) {
 		calculator.changeOperation(operation);
 		return;
 	}
+
+	const num = Number(screenContent);
 
 	calculator.addInput(num, operation);
 	setScreenContent(calculator.result);

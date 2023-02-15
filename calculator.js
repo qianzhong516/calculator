@@ -53,7 +53,7 @@ class Calculator {
             return;
         }
         const result = this.calculate(this.history[midPos], this.history[leftPos], this.history[rightPos]);
-        this.resultToDisplay = result;
+        this.resultToDisplay = Number(result.toFixed(2));
         // replace the equation with the calculated result
         this.history.splice(leftPos, 3, result);
         this.traverseLeft(this.history.length - 1);
